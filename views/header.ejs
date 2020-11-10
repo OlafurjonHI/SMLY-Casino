@@ -1,0 +1,13 @@
+<header class="header">
+    <nav class="nav">
+        <ul class="nav__links">
+            <li class="nav__link"><a href="/signup">Signup</a></li>
+            <li class="nav__link"><a href="/login">Login</a></li>
+            <li class="nav__link"><a href="/showplayers">show</a></li>
+            <li class="nav__link"><a href="/help">View Commands</a></li>
+        </ul>
+        <% if(player){ %>
+            <span><%= player.username %></span>
+        <% } %>
+    </nav>
+</header>
