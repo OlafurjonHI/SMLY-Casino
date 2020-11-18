@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Info | SMLY Casino</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/player.css">
+</head>
+<body>
+    <%- include('header') %>
+    <main class="player">
+        <section class="player__info">
+            <span><strong>Username:</strong> <%= player["username"] %></span>
+            <span><strong>Casino Address:</strong> <%= player["casinoAddress"] %></span>
+            <span><strong>Balance:</strong> <%= totalAmount %></span>
+            <form action="/playerinfo" method="POST">
+                <button type="submut">Update Balance</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

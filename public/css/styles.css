@@ -1,0 +1,61 @@
+@import "./resets.css";
+@import "./header.css";
+:root {
+    --max-width: 60em;
+}
+
+html {
+    background-color: transparent;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+h1 {
+    font-size: 2em;
+}
+h2 {
+    font-size: 1.5em;
+}
+
+
+main {
+    max-width: var(--max-width);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+}
+
+.gamecorner__player {
+    width: 30%;
+    padding: 1em;
+    box-sizing: border-box;
+}
+.player__info{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.gamecorner__container {
+    width: 70%;
+    box-sizing: border-box;
+    padding: 1em;
+}
+.gamecorner__strong {
+    font-weight: bold;
+}
+
+.highlow {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    min-height: 20em;
+}
+
+.highlow__deck{
+    display: flex;
+    flex-direction: column;
+}

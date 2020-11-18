@@ -1,13 +1,26 @@
 <header class="header">
     <nav class="nav">
         <ul class="nav__links">
-            <li class="nav__link"><a href="/signup">Signup</a></li>
-            <li class="nav__link"><a href="/login">Login</a></li>
+            <% if(!player){ %>
+                <li class="nav__link"><a href="/signup">Signup</a></li>
+                <li class="nav__link"><a href="/login">Login</a></li>
+            <% } %>
+            <% if(player){ %>
+                <div class="nav__submenu">
+                    <span class="nav__link">Games</span>
+                    <ul class="nav__sublinks">
+                        <li class="nav__sublink"><a href="/games/highorlow">High or low</a></li>
+                        <li class="nav__sublink"><a href="/games/blackjack">Blackjack</a></li>
+                        <li class="nav__sublink"><a href="/games/tba">TBA</a></li>
+                    </ul>
+                </div>
+                <li class="nav__link"><a href="/playerinfo"><%= player.username %>'s Info</a></li>
+            <% } %>
             <li class="nav__link"><a href="/showplayers">show</a></li>
             <li class="nav__link"><a href="/help">View Commands</a></li>
+            <% if(player){ %>
+                <li class="nav__link"><a href="/logout">Logout</a></li>
+            <% } %>
         </ul>
-        <% if(player){ %>
-            <span><%= player.username %></span>
-        <% } %>
     </nav>
 </header>

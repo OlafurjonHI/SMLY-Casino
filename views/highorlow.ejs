@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Info | SMLY Casino</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <%- include('header') %>
+    <main class="gamecorner">
+        <aside class="gamecorner__player">
+            <div class="player__info">
+                <span class="player__stats"><strong class="gamecorner__strong">Player:</strong><%= player["username"] %></span>
+                <span class="player__stats"><strong class="gamecorner__strong">Current Amount:</strong><%= player["currentFunds"] %></span>
+                <span class="player__stats"><strong class="gamecorner__strong">Current Winnings:</strong><%= player["currentWinnings"] %></span>
+                <span class="player__stats"><strong class="gamecorner__strong">Total Amount:</strong><%= totalAmount %></span>
+            </div>
+        </aside>
+        <section class="gamecorner__container">
+            <div class="gamecorner__info">
+                <h2 class="gamecorner__title">Welcome to High or Low!</h2>
+                <p class="gamecorner__info"><strong class="gamecorner__strong">Instructions</strong>
+                This is a simple little game you can play up to 10 rounds per deck. We will show you a random card
+                and the only thing you need to do is guess, if the next card will be higher or lower
+                </p>
+            </div>
+            <div class="gamecorner__game">
+                <div class="highlow">
+                    <div class="highlow__card">
+                        <div class="highlow__imgContainer">
+                            <img src= <%= card.getImgPath() %> alt="<%= (card.toString()) %>"/>
+                        </div>
+                        <span> <%= card %></span>
+                    </div>
+                    <div class="highlow__deck">
+                        <div class="highlow__imgContainer">
+                            <img src= <%= card.backimage %> alt="<%= (card.toString()) %>"/>
+                        </div>
+                        <span>Cards in deck:<%= deck.getSize() %></span>
+                        <span>Cards until restart:<%= deck.getSize()-42 %></span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+</body>
+</html>

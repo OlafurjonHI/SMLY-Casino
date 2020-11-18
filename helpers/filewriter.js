@@ -1,4 +1,5 @@
-const {writeFile, readFileSync  } = require('fs');
+const { debug } = require('console');
+const {writeFile, readFileSync, existsSync, exists  } = require('fs');
 
 function writeObjToFile(filename,obj){
     writeFile(filename,JSON.stringify(obj),(err) => {
@@ -10,11 +11,23 @@ function writeObjToFile(filename,obj){
 }
 
 function readObjFromFile(filename){
+    if(!validatePath(filename)) return;
     let rawdata = readFileSync(filename);
-    let data = JSON.parse(rawdata);
-    console.log(data)
-    return data;
+    if(rawdata.length === 0){
+        rawdata = JSON.parse(rawdata);
+    }
+    return rawdata;
+}
+function validatePath(path){
+    try{
+        if(existsSync(path))
+            return true;
+        return false;
+    }catch(err){
+        return false
+    }
 }
 
 exports.writeObjToFile = writeObjToFile;
-exports.readObjFromTile = readObjFromFile;
+exports.readObjFromFile = readObjFromFile;
+exports.validatePath = validatePath;

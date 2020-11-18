@@ -1,0 +1,1 @@
+{"account":"SMLYCASINO","address":"BPYKcpotu8KgHMSYmrjT9ZzjMXhiY6CDjR","totalAmount":0,"totalOwed":0,"playerFile":"files/players.json","casinoFile":"files/casino.json","players":{"bill":{"username":"bill","password":"bill","orgAddress":"bill","casinoAddress":"BBCH1PVQuGBVugEif6G8jLH7KSCWruTZUF","currentFunds":50,"currentWinnings":0}},"casinoServer":"http://localhost:1337/"}

@@ -1,1 +1,1 @@
-{"playerlist":[{"username":"john","password":"john","orgAddress":"BE8GVuU3Q5EugmufMNhiNBFFy2rWDE1T9G","casinoaddress":"BT9sCdcAcQ51wptmR8Jv2f1sZmZCcotK1E","currentFunds":0},{"username":"bill","password":"bill","orgAddress":"BFPZefAVksDrdd95oCzT9mr75fm41mAVEr","casinoaddress":"BMuZpE9U2seorq4xMCWrzRqnxf15WNQJAB","currentFunds":0}]}
+{"bill":{"username":"bill","password":"bill","orgAddress":"bill","casinoAddress":"BBCH1PVQuGBVugEif6G8jLH7KSCWruTZUF","currentFunds":50,"currentWinnings":0}}

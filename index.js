@@ -1,48 +1,80 @@
+//Packages
 const express = require('express');
 const session = require('express-session');
-const app = express();
 const path = require("path")
 const bodyParser = require('body-parser');
 
-
+//app config
+const app = express();
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
-app.use(session({secret:'SMLYSECRET'}));
+
+app.use(session({
+    secret:'SMLYSECRET',
+    name:'smly_cookie',
+    resave: true,
+    saveUninitialized: true
+}));
 app.use(bodyParser.json())
-
-const ShellCommand = require('./execshell');
-const FW = require('./helpers/filewriter');
-const Casino = require('./casino');
-const Player = require('./player')
-
-const port = 1337
-app.listen(port ,() =>{
-    console.log(`Server started on port: ${port}`)
+app.use((req,res,next) => {
+    res.locals.urlDomain = `${req.protocol}://${req.get('host')}/`
+    next();
 })
 
-let casino = new Casino();
+//Entities and Helpers
+const ShellCommand = require('./execshell');
+const FW = require('./helpers/filewriter');
+const Casino = require('./entities/casino')
+const Deck = require('./entities/deck');
+const Card = require('./entities/card');
+const { Console } = require('console');
 
+let casino = new Casino("http://localhost:1337/");
 let ssn;
+const port = 1337
+
+app.listen(port ,() =>{
+    console.log(`Server started on port: ${port}`)
+    
+    FW.writeObjToFile(casino.casinoFile,casino)
+})
+
 
 app.get("/", (req,res)=> {
     ssn = req.session;
     res.render("index",{
         player: ssn.currentPlayer
     });
-    casino.getCasinoBalance(ShellCommand)
 })
 
 
 
-app.get("/showplayers", (req,res)=> {
+app.get("/playerinfo", (req,res)=> {
     ssn = req.session;
-    casino.showPlayers();
+    if(ssn.currentPlayer == null)
+        res.redirect('/')
+    else {
+    
+    FW.writeObjToFile(casino.playerFile, casino.players)
+    res.render("playerinfo", {
+        player: ssn.currentPlayer,
+        totalAmount: casino.getPlayerBalance(ssn.currentPlayer["username"])
+    });
+    }
 })
 
-app.get("/playerBalance", (req,res)=> {
+app.post("/playerinfo", (req,res)=> {
     ssn = req.session;
-    casino.getPlayerBalance(ShellCommand,ssn.currentPlayer)
-
+    if(ssn.currentPlayer == null)
+        res.redirect('/')
+    else {
+    casino.updatePlayerBalance(ssn.currentPlayer['username'])
+    FW.writeObjToFile(casino.playerFile, casino.players)
+    res.render("playerinfo", {
+        player: ssn.currentPlayer,
+        totalAmount: casino.getPlayerBalance(ssn.currentPlayer["username"])
+    });
+    }
 })
 
 app.get("/login", (req,res)=> {
@@ -58,12 +90,16 @@ app.post("/login",bodyParser.urlencoded({extended:false}), (req,res)=> {
     const { username,password} = req.body;
     let player = casino.verifyPlayer(username,password);
     console.log(player)
-    if(player)
+    if(player){
         ssn.currentPlayer = player;
-        
-    res.render("login",{
-        player: ssn.currentPlayer
-    });
+        console.log(app.locals.urlDomain)
+        res.redirect("/playerinfo")
+    }
+    else {
+        res.render("login",{
+            player: ssn.currentPlayer
+        });
+    }
 })
 
 
@@ -77,22 +113,25 @@ app.get("/signup", (req,res)=> {
 
 
 app.post("/signup",bodyParser.urlencoded({extended:false}), (req,res)=> {
-    console.log(req.body);
     ssn = req.session;
-    let { username, password, address } = req.body;
-    let playerlist = FW.readObjFromTile(casino.getPlayersList()).playerlist;
-    let filtered = playerlist.filter(p => p.username.toLowerCase() === username.toLowerCase())
-    if(filtered.length === 0){
-        let player = new Player(username,password,address)
-        casino.getNewAddressforPlayer(ShellCommand,player)
-        ssn.currentPlayer = player;
-    }    
+    let { username, password, address} = req.body;
+    if(casino.getPlayers[username])
+        return
+    casino.createNewPlayer(ShellCommand,username,password,address)
+    FW.writeObjToFile(casino.casinoFile,casino);
+    FW.writeObjToFile(casino.playerFile,casino.players)
+    ssn.currentPlayer = casino.getPlayer(username); 
     res.render("signup",{
         player: ssn.currentPlayer
      })
 })
 
 
+app.get("/logout", (req,res) => {
+    ssn = req.session;
+    ssn.currentPlayer = null;
+    res.redirect("/")
+})
 
 app.get("/help", (req,res)=> {
         ssn = req.session;
@@ -101,12 +140,60 @@ app.get("/help", (req,res)=> {
     })
 })
 
-app.get("/gethelp", (req,res)=> {
+//Game Corner
+
+app.get("/games/highorlow", (req,res)=> {
+    ssn = req.session;
+    if(ssn.currentPlayer == null)
+        res.redirect('/')
+    else {
+        let deck 
+        let drawncard;
+        if(ssn.deck == null || ssn.deck.deck.length <= 42){
+            deck = new Deck();
+            deck.shuffleDeck();
+            drawncard = deck.drawCard();
+            ssn.deck = deck;
+        } else {
+            deck = new Deck((ssn.deck.deck))
+            drawncard = deck.drawCard();
+            ssn.deck = deck
+        }
+        
+        let total = parseInt(casino.getPlayerBalance(ssn.currentPlayer["username"]))
+        res.render("highorlow",{
+            player: ssn.currentPlayer,
+            card: drawncard,
+            deck: ssn.deck,
+            totalAmount: total
+        });
+    }
+})
+
+
+
+
+
+
+
+ //Casino Requests:
+ app.get("/getbalance", bodyParser.urlencoded({extended:false}),(req,res)=> {
+    const { account } = req.query;
+    ShellCommand(`getbalance ${account}`).then(
+         ret => {
+             return res.json(parseFloat(ret.stdout))
+         })
+ })
+
+
+ app.get("/gethelp", (req,res)=> {
     ShellCommand("help").then(
          ret => {
              let arr = ret.stdout.split('\n')
-             console.log(arr.length)
              return res.json(arr)
          })
- 
  })
+
+
+
+
