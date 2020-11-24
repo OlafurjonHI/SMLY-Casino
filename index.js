@@ -27,7 +27,7 @@ const FW = require('./helpers/filewriter');
 const Casino = require('./entities/casino')
 const Deck = require('./entities/deck');
 const Card = require('./entities/card');
-const { Console } = require('console');
+
 
 let casino = new Casino("http://localhost:1337/");
 let ssn;
@@ -35,7 +35,7 @@ const port = 1337
 
 app.listen(port ,() =>{
     console.log(`Server started on port: ${port}`)
-    
+    casino.updateCasinoBalance();
     FW.writeObjToFile(casino.casinoFile,casino)
 })
 
@@ -76,6 +76,27 @@ app.post("/playerinfo", (req,res)=> {
     });
     }
 })
+
+app.post("/cashout", bodyParser.urlencoded({extended:false}),(req,res)=> {
+    ssn = req.session;
+    if(ssn.currentPlayer == null)
+        res.redirect('/')
+    else {
+        const { amount} = req.body;
+        let result = casino.transferFromCasino(ShellCommand,ssn.currentPlayer["username"],amount)
+        console.log(`Result: ${result}`)
+        if(result){
+            casino.updateCasinoBalance()
+            casino.updatePlayerBalance(ssn.currentPlayer['username'])
+            FW.writeObjToFile(casino.casinoFile,casino)
+            FW.writeObjToFile(casino.playerFile,casino.players)
+        }
+        res.redirect('/playerinfo')
+    }
+ })
+
+
+
 
 app.get("/login", (req,res)=> {
     ssn = req.session;
@@ -140,6 +161,15 @@ app.get("/help", (req,res)=> {
     })
 })
 
+app.get("/casino", (req,res)=> {
+    ssn = req.session;
+    casino.updateCasinoBalance();
+res.render("casino",{
+    player: ssn.currentPlayer,
+    casino: casino
+})
+})
+
 //Game Corner
 
 app.get("/games/highorlow", (req,res)=> {
@@ -149,27 +179,133 @@ app.get("/games/highorlow", (req,res)=> {
     else {
         let deck 
         let drawncard;
+
+        if(ssn.currentDrawnCard){
+            deck = new Deck((ssn.deck.deck))
+            ssn.deck = deck
+            const {rank, suit} = ssn.currentDrawnCard
+            let drawncard = new Card(suit,rank)
+            let total = parseInt(casino.getPlayerBalance(ssn.currentPlayer["username"]))
+            ssn.message == "Welcome Back"
+            res.render("highorlow",{
+                player: ssn.currentPlayer,
+                card: drawncard,
+                deck: ssn.deck,
+                totalAmount: total,
+                msg: ssn.message,
+            });
+        }
+        else {
+        
+            if(ssn.deck == null || ssn.deck.deck.length <= 42){
+                deck = new Deck();
+                deck.shuffleDeck();
+                drawncard = deck.drawCard();
+                ssn.message = `New Game \nFirst card is: \n${drawncard.toString()}\n`
+                ssn.deck = deck;
+            } else {
+                deck = new Deck((ssn.deck.deck))
+                drawncard = deck.drawCard();
+                ssn.message += `Next card is: \n${drawncard.toString()}\n`
+                ssn.deck = deck
+            }
+            ssn.currentDrawnCard = drawncard
+            let total = parseInt(casino.getPlayerBalance(ssn.currentPlayer["username"]))
+            FW.writeObjToFile(casino.playerFile,casino.players)
+            FW.writeObjToFile(casino.casinoFile,casino)
+            res.render("highorlow",{
+                player: ssn.currentPlayer,
+                card: drawncard,
+                deck: ssn.deck,
+                totalAmount: total,
+                msg: ssn.message,
+            });
+        }
+    }
+})
+
+app.post("/games/highorlow",bodyParser.urlencoded({extended:false}), (req,res)=> {
+    ssn = req.session;
+    if(ssn.currentPlayer == null)
+        res.redirect('/')
+    else {
+        const {rank, suit} = ssn.currentDrawnCard
+        let oldcard = new Card(suit,rank)
+        let total = parseInt(casino.getPlayerBalance(ssn.currentPlayer["username"]))
+        let { amount, highlow } = req.body;
+        if(amount > total){
+            let deck = new Deck((ssn.deck.deck))
+            ssn.message  += `You dont have ${amount} to spend\nTry Again or transfer funds to ${ssn.currentPlayer['casinoAddress']}\n` 
+            FW.writeObjToFile(casino.playerFile,casino.players)
+            FW.writeObjToFile(casino.casinoFile,casino)
+            res.render("highorlow",{
+                player: ssn.currentPlayer,
+                card: oldcard,
+                deck: deck,
+                totalAmount: total,
+                error: error,
+                msg: ssn.message
+            });
+            return;
+        }
+ 
+        let deck,drawncard
         if(ssn.deck == null || ssn.deck.deck.length <= 42){
             deck = new Deck();
             deck.shuffleDeck();
             drawncard = deck.drawCard();
             ssn.deck = deck;
+            ssn.message = `New Game \nFirst card is: \n${drawncard.toString()}\n`
         } else {
             deck = new Deck((ssn.deck.deck))
             drawncard = deck.drawCard();
             ssn.deck = deck
+            ssn.message += `Next card is: \n${drawncard.toString()}\n`
         }
-        
-        let total = parseInt(casino.getPlayerBalance(ssn.currentPlayer["username"]))
+        highlow = parseInt(highlow)
+        oldrank = oldcard.getPureRank()
+        newrank = drawncard.getPureRank()
+        if(highlow > oldrank){
+            console.log("higher")
+            if(oldrank < newrank){
+                casino.transferWinningsToAccount(ssn.currentPlayer["username"],amount)
+                ssn.message += `Congratulations Adding: ${amount} to your winnings\n`
+            }
+            else {
+                casino.transferWinningsToCasino(ssn.currentPlayer["username"],amount)
+                ssn.message += `To bad... transferring: ${amount} from your account\n`
+            }
+        }
+        else if(highlow < oldrank){
+            console.log("lower")
+            if(oldrank > newrank){
+                casino.transferWinningsToAccount(ssn.currentPlayer["username"],amount)
+                ssn.message += `Congratulations Adding: ${amount} to your winnings\n`
+            }
+            else {
+                casino.transferWinningsToCasino(ssn.currentPlayer["username"],amount)
+                ssn.message += `To bad... transferring: ${amount} from your account\n`
+            }
+        }
+        else if(oldrank === newrank){
+            casino.transferWinningsToCasino(ssn.currentPlayer["username"],amount)
+            ssn.message += `To bad... transferring: ${amount} from your account`
+        }
+        ssn.currentPlayer = casino.getPlayer(ssn.currentPlayer["username"])
+        ssn.currentDrawnCard = drawncard
+        total = parseInt(casino.getPlayerBalance(ssn.currentPlayer["username"]))
+        FW.writeObjToFile(casino.playerFile,casino.players)
+        FW.writeObjToFile(casino.casinoFile,casino)
         res.render("highorlow",{
             player: ssn.currentPlayer,
             card: drawncard,
             deck: ssn.deck,
-            totalAmount: total
+            totalAmount: total,
+            error: null,
+            msg: ssn.message
         });
     }
 })
-
 
 
 
@@ -193,6 +329,8 @@ app.get("/games/highorlow", (req,res)=> {
              return res.json(arr)
          })
  })
+
+ 
 
 
 

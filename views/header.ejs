@@ -1,13 +1,17 @@
 <header class="header">
+        <a href="/" class="header__logo">
+            <img class="header__img" alt="SMLY logo with sunglasses" src="/img/logo/headlogo2.png">
+            <span class="header__title">SMLY Casino</span>
+        </a>
     <nav class="nav">
         <ul class="nav__links">
             <% if(!player){ %>
                 <li class="nav__link"><a href="/signup">Signup</a></li>
-                <li class="nav__link"><a href="/login">Login</a></li>
+                <li class="nav__link"><a href="/login">Login</a></li>  
             <% } %>
             <% if(player){ %>
                 <div class="nav__submenu">
-                    <span class="nav__link">Games</span>
+                    <span class="nav__link">Games <span class="nav__arrow">	&#x27A7;</span>
                     <ul class="nav__sublinks">
                         <li class="nav__sublink"><a href="/games/highorlow">High or low</a></li>
                         <li class="nav__sublink"><a href="/games/blackjack">Blackjack</a></li>
@@ -16,8 +20,7 @@
                 </div>
                 <li class="nav__link"><a href="/playerinfo"><%= player.username %>'s Info</a></li>
             <% } %>
-            <li class="nav__link"><a href="/showplayers">show</a></li>
-            <li class="nav__link"><a href="/help">View Commands</a></li>
+            <li class="nav__link"><a href="/casino">Casino Info</a></li>
             <% if(player){ %>
                 <li class="nav__link"><a href="/logout">Logout</a></li>
             <% } %>

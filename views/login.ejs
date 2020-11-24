@@ -5,13 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | SMLY Casino</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="shortcut icon" href="/img/logo/headlogo.png" type="image/x-icon">
 </head>
 <body>
     <%- include('header') %>
-    <form action="/login" method="POST">
-        <input type="text" name="username" id="form__username" placeholder="Username">
-        <input type="password" name="password" id="form__passwrd" placeholder="Password">
-        <button type="submit">Submit</button>
-    </form>
+<main>
+    <section class="section">
+        <div class="section__content">
+            <div class="section__logo">
+                <div class="section__logoImg">
+                    <img class="section__img" src="/img/logo/headlogo2.png" alt="SMLY coin Casino Logo">
+                </div>
+                <span class="section__logoTitle"><strong>SMLY</strong> Casino</span>
+            </div>
+            <p class="section__p">
+                Good to see you, hope you remember your password.
+            </p>
+        </div>
+    </section>
+    <section class="section">
+        <div class="section__content">
+            <span class="section__title">Welcome</span>
+            <div class="section__innerContent">
+                <div class="section__text">
+                    <p>Please be mindful of how you gamble. It should be fun and exhilarating not causing problems at home.</p>
+                </div>
+                <form class="section__form" action="/login" method="POST">
+                    <label class="section__label" for="username">Username:</label>
+                    <input class="section__input" type="text" name="username" id="form__username" placeholder="Username">
+                    <label class="section__label" for="password">Password:</label>
+                    <input class="section__input" type="password" name="password" id="form__passwrd" placeholder="Password">
+                    <button class="section__button" type="submit">Login</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+    <%- include('footer') %>
 </body>
 </html>

@@ -21,6 +21,9 @@ class Card {
         rank = (rank < 12) ? (rank === 10) ? "Jack" : "Queen" : "King"
         return rank
     }
+    getPureRank(){
+        return this.rank
+    }
     getImgPath(){
         let suit = parseInt(this.suit)
         let imgdir = (suit < 2) ? (suit === 1) ? "spadi" : "hjarta" : (suit === 2) ? "tigull" : "lauf"

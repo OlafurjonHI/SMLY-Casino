@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   
     function fetchData() {
-        fetch("http://localhost:1337/gethelp")
+        fetch(`${window.location.origin}/gethelp`)
         .then((res) => {
             if (res.status != 200) console.error("Failed To fetch data");
             return res.json();

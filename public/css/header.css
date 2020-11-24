@@ -2,6 +2,29 @@
     display: flex;
     justify-content: center;
     border: 1px solid black;
+    background-color:var(--nav-bg);
+    max-height: 4em;
+
+}
+
+.header__logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    text-transform: none;
+    padding: 0.5em 0;
+}
+.header__img {
+    height: 100%;
+}
+.header__title {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: white;
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-left: .5em;
+    text-decoration: none;
+    text-transform: none;
 }
 
 .nav {
@@ -12,6 +35,8 @@
     justify-content: center;
     max-width: var(--max-width) ;
     padding: 1em;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
 }
 .nav__links {
     width: 100%;
@@ -26,19 +51,40 @@
     cursor: pointer;
     font-weight: bold;
     list-style: none;
-    text-transform: uppercase;
-
+    color: white;
+}
+.nav__links>.nav__link:hover a {
+    transition: color 300ms ease-in;
+    color: var(--smly-blue);
 }
 
 .nav__link a, .nav__sublink a{
     text-decoration: none;
+    color: white;
 }
+.nav__arrow {
+    display: inline-block;
 
+}
 .nav__submenu {
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
+}
+.nav__submenu:hover span {
+    transition: color 300ms ease-in;
+    color: var(--smly-blue);
+}
+.nav__sublinks> .nav__sublink:hover a {
+    transition: color 300ms ease-in;
+    color: var(--smly-blue);
+}
+
+.nav__submenu:hover .nav__arrow {
+    transition: color 300ms ease-in;
+    transition: transform 300ms ease-in;
+    transform: rotate(90deg);
 }
 .nav__sublinks {
     position: absolute;
@@ -52,10 +98,30 @@
     line-height: 2em;
     min-width: fit-content;
     top: 3em;
-    left: 11.5em;
-
+    background-color: var(--nav-bg);
 }
 .nav__submenu:hover .nav__sublinks {
     transition: transform 300ms ease-in;
     transform: scaleY(1);
 }
+@media only screen and (max-width: 768px) {
+    .header {
+        flex-direction: row;
+        flex-wrap: wrap;
+        max-height: 8em;
+    }
+    .header__logo {
+        width: 100%;
+        max-height: 3em;
+        justify-content: center;
+    }
+    .nav {
+        width: 100%;
+    }
+    .section {
+        padding: 0;
+    }
+    .nav__sublinks{
+        top: 6em;
+    }
+  }

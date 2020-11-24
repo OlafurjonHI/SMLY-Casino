@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino Info | SMLY Casino</title>
+    <link rel="shortcut icon" href="/img/logo/headlogo.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/player.css">
+</head>
+<body>
+    <%- include('header') %>
+    <main class="player">
+        <section class="player__info">
+            <span><strong>Account:</strong> <%= casino.account %></span>
+            <span><strong>Casino Address:</strong> <%= casino.address %></span>
+            <span><strong>house status:</strong> <%= (casino.totalOwed) %></span>
+            <span><strong>Balance:</strong> <%= (casino.totalAmount + casino.totalOwed) %></span>
+            
+           
+        </section>
+    </main>
+</body>
+</html>

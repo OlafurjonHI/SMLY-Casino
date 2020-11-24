@@ -28,7 +28,6 @@ class Casino {
         this.account = obj.account;
         this.address = obj.address;
         this.totalOwed = obj.totalOwed;
-        
         this.playerFile = obj.playerFile;
         this.casinoFile = obj.casinoFile;
     }
@@ -37,20 +36,111 @@ class Casino {
     getCasinoOwed() {return this.totalOwed};
  
     getCurrentStanding(){
-        return this.totalAmount - this.totalOwed;
+        if(this.totalOwed >= 0)
+            return this.totalAmount - this.totalOwed;
+        else 
+            return this.totalAmount + this.totalOwed;
     }
 
-    transferWinningsToAccount(player,amount){
+    transferWinningsToAccount(username,amount){
         if(amount <= this.getCurrentStanding() ){
-            player.currentWinnings += amount
-            this.totalOwed + amount;
+            console.log("Bank transferring")
+            this.getPlayer(username)["currentWinnings"] += parseFloat(amount)
+            this.totalOwed -= parseFloat(amount);
+        }
+        else {
+            console.log("Bank Cant transfer")
         }
     }
+    transferWinningsToCasino(username,amount){
+        if(amount <= this.getPlayerBalance(username) ){
+            console.log("User transferring")
+            this.getPlayer(username)["currentWinnings"] -= parseFloat(amount)
+            this.totalOwed += parseFloat(amount);
+        }
+        else  
+            console.log("User cant transfer")
+    }
 
-    tranferFromCasino(shellcommand,to,amount,comment,commentTo){
-        shellcommand(`sendfrom "${this.account}" "${to}" ${amount} 6 "${comment}" "${commentTo}"`).then(
-            res => console.log(res)
-        )
+    transferFromCasino(shellcommand,username,amount){
+        amount = parseFloat(amount)
+        let orgAddress = this.players[username]["orgAddress"];
+        let check = false;
+        let emptyAll = false;
+        let ownedAmount = parseFloat(this.getPlayerBalance(username))
+        if(amount > ownedAmount){
+            console.error("Insufficient Funds")
+            return false
+        }
+        if(ownedAmount - amount === 0){
+            check = true;
+            emptyAll = true;
+        }
+        else if(ownedAmount > amount){
+            check = true;
+            emptyAll = false;
+        }
+        try{
+            if(check === true){
+                let playerwinnings = parseFloat(this.players[username]["currentWinnings"])
+                if(emptyAll){
+                    let command1 = `sendfrom "${this.account}" "${orgAddress}" ${playerwinnings} 6 "Withdrawal from ${this.account}" "To ${username}"`
+                    let command2 = `sendfrom "${ this.players[username]["username"]}" "${orgAddress}" ${parseFloat(this.players[username]["currentFunds"])} 6 "Withdrawal from ${ this.players[username]}" "To ${ this.players[username]["orgAddress"]}"`
+                    shellcommand(command1).then(
+                        res => console.log(res)
+                    )
+                    shellcommand(command2).then(
+                        res => console.log(res)
+                    )
+                    this.totalOwed += parseFloat(this.players[username]["currentWinnings"])
+                    this.currentFunds -= parseFloat(this.players[username]["currentFunds"])
+                    this.players[username]["currentWinnigs"] = 0;
+                    this.players[username]["currentFunds"] = 0;
+                }
+                else {
+                    if(playerwinnings >= amount){
+                        let command1 = `sendfrom "${this.account}" "${orgAddress}" ${amount} 6 "Withdrawal from ${this.account}" "To ${username}"`
+                        console.log(command1)
+                        shellcommand(command1).then(
+                            res => console.log(res)
+                        )
+                       
+                        this.players[username]["currentWinnings"] -= amount
+                        this.totalOwed += amount
+                    }
+                    if(amount > playerwinnings){
+                        let difference = amount - playerwinnings;
+                        difference = parseFloat(difference)
+                        let command1 = `sendfrom "${this.account}" "${orgAddress}" ${playerwinnings} 6 "Withdrawal from ${this.account}" "To ${username}"`
+                        console.log(command1)
+                        shellcommand(command1).then(
+                            res => console.log(res)
+                        )
+                        this.players[username]["currentWinnings"] = 0;
+                        this.totalOwed += playerwinnings
+                       
+                        let command2 = `sendfrom "${ this.players[username]["username"]}" "${orgAddress}" ${difference} 6 "Withdrawal from ${ this.players[username]}" "To ${ this.players[username]["orgAddress"]}"`
+                        console.log(command2)
+                        shellcommand(command2).then(
+                            res => console.log(res)
+                        )
+                        this.players[username]["currentFunds"] -= difference
+                        this.currentFunds -= difference
+                    }
+                }
+                return check;
+            }
+            else {
+                return check;
+            }
+        
+        }catch{
+            check = false;
+            console.log("Failed the try")
+            console.error("Error processing request")
+        }
+ 
+        return check
     }
 
     createNewPlayer(shellcommand,username,password,address){
@@ -99,7 +189,9 @@ class Casino {
         fetch(url).then(res => {
             if(res.status !== 200) console.error("Failed")
             return res.json();
-        }).then(resp => this.totalAmount = parseFloat(resp)
+        }).then(resp => {
+            this.totalAmount = parseFloat(resp)
+        }
         ).catch(error =>console.log("error getting funds" + error))
     }
 
@@ -122,7 +214,6 @@ class Casino {
 
     updatePlayersBalance(){
         for (const [key, value] of Object.entries(this.players)) {
-            console.log(key)
             this.updatePlayerBalance(key)
         }
     }

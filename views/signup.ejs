@@ -4,15 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup | SMLY Casino</title>
+    <link rel="shortcut icon" href="/img/logo/headlogo2.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
     <%- include('header') %>
-    <form action="/signup" method="POST">
-        <input type="text" name="username" id="form__username" placeholder="Username">
-        <input type="password" name="password" id="form__passwrd" placeholder="Password">
-        <input type="text" name="address" id="form__address" placeholder="SMLY Address">
-        <button type="submit">Submit</button>
-    </form>
+    <main class="main">
+        <section class="section">
+            <div class="section__content">
+                <div class="section__logo">
+                    <div class="section__logoImg">
+                        <img class="section__img" src="/img/logo/headlogo2.png" alt="SMLY coin Casino Logo">
+                    </div>
+                    <span class="section__logoTitle"><strong>SMLY</strong> Casino</span>
+                </div>
+                <p class="section__p">
+                    You are taking your first steps to becoming a SMLY Legend. Enjoy your time with us and remember if your luck strikes out, try again later when you feel your luck is returning 😉
+                </p>
+            </div>
+        </section>
+        <section class="section">
+            <div class="section__content">
+                <span class="section__title">How do i join?</span>
+                <div class="section__innerContent">
+                    <div class="section__text">
+                        <p>First you have to own a SMLY wallet that has some SMLY coins in it, further information <a href="https://smileyco.in/">here</a> Next stop is to find a username, a safe password and insert an address you want to be linked as the withdrawal address. After submition you will be given a personalized Casino Address</p>
+                    </div>
+                    <form class="section__form" action="/signup" method="POST">
+                        <label class="section__label" for="username">Username:</label>
+                        <input class="section__input" type="text" name="username" id="form__username" placeholder="Username">
+                        <label class="section__label" for="password">Password:</label>
+                        <input class="section__input" type="password" name="password" id="form__passwrd" placeholder="Password">
+                        <label class="section__label" for="address">SMLY Address:</label>
+                        <input class="section__input" type="text" name="address" id="form__address" placeholder="SMLY Address">
+                        <button class="section__button" type="submit">Register</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <%- include('footer') %>
 </body>
 </html>
