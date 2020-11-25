@@ -1,0 +1,89 @@
+
+.player__info{
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+.gamecorner__message{
+    font-size: 1rem;
+    line-height: 1.5rem;
+    min-width: 10em;
+
+   
+}
+.message {
+    border: 1px solid black;
+    overflow: auto;
+}
+.message__text {
+    white-space: pre;
+    max-height: 10em;
+    overflow: auto;
+}
+.gamecorner__container {
+    width: 60%;
+    box-sizing: border-box;
+    padding: .5em;
+}
+.gamecorner__game {
+    padding: 1em 0;
+}
+.gamecorner__strong {
+    font-weight: bold;
+}
+
+.game__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.highlow__img {
+    width: 100%;
+    height: 100%;
+}
+.highlow {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.highlow__deck, .highlow__imgContainer {
+    max-width: 15em;
+    width: 50%;
+    box-sizing: border-box;
+    padding: .5em;
+}
+.highlow__interactions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.highlow__betting {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1em;
+}
+.highlow__button {
+    width: 100%;
+    margin-top: 1em;
+}
+.highlow__form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%
+}
+
+@media only screen and (max-width: 768px) {
+    .highlow__deck, .highlow__imgContainer {
+        width: 100%;
+        padding: 0;
+    }
+}

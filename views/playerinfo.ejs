@@ -10,23 +10,72 @@
 </head>
 <body>
     <%- include('header') %>
-    <main class="player">
-        <section class="player__info">
-            <span><strong>Username:</strong> <%= player["username"] %></span>
-            <span><strong>Casino Address:</strong> <%= player["casinoAddress"] %></span>
-            <span><strong>Balance:</strong> <%= totalAmount %></span>
-            
-            <form action="/playerinfo" method="POST">
-                <button type="submit">Update Balance</button>
-            </form>
-
-            <form action="/cashout" method="POST">
-                <label for="amount">Withdraw Amount</label>
-                <input type="number" placeholder="0" name="amount" id="amount" max="<%= totalAmount %>" required><span class="currency">SMLY</span>
-                <button type="submit">Cash Out</button>
-            </form>
+    <main class="main">
+        <section class="section">
+            <div class="section__content">
+                <div class="section__logo">
+                    <div class="section__logoImg">
+                        <img class="section__img" src="/img/logo/avatarlogo.png" alt="Casino in a suitcase">
+                    </div>
+                    <span class="section__logoTitle"><strong>SMLY</strong> Casino</span>
+                </div>
+                <p class="section__p">
+                   Here you can withdraw coins or view your personalized casino address to add more funds.
+                </p>
+            </div>
+        </section>
+        <section class="section">
+            <div class="section__content">
+                <span class="section__title"><%= player.username %>'s Info</span>
+                <div class="section__innerContent">
+                    <div class="section__text ">
+                        <p>You can use the Casino Address to transfer funds from your wallet to your casino account.</p>
+                        <p class="section__note">* When depositing or withdrawing funds there can be few minutes waiting time for the transactions to be confirmed</p>
+                    </div>
+                    <div class="section__text section__stats">
+                        <span class="section__span"><strong class="section__strong">Username:</strong> <%= player["username"] %></span>
+                        <span class="section__span SMLY__address"><strong class="section__strong">Casino Address:</strong> <%= player["casinoAddress"] %></span>
+                        <span class="section__span"><strong class="section__strong">Winnings:</strong> <%= player["currentWinnings"] %></span>
+                        <span class="section__span"><strong class="section__strong">Balance:</strong> <%= totalAmount %> <span class="section__strong">SMLY</span></span>
+                        <form action="/playerinfo" method="POST">
+                            <button class="section__button" type="submit">Force Update Balance</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section">
+            <div class="section__content">
+                <span class="section__title">QR Code</span>
+                <div class="section__innerContent">
+                    <div class="section__text ">
+                        <p>Here you can conviently scan the QR code of the Casino Address to hasten the process of transferring funds</p>
+                    </div>
+                    <div class="section__text section__qr">
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section">
+            <div class="section__content">
+                <span class="section__title">Withdraw Funds</span>
+                <div class="section__innerContent">
+                    <div class="section__text">
+                        <p>Here you can withdraw your winnings or cash out everything</p>
+                    </div>
+                    <form class="section__form" action="/cashout" method="POST">
+                        <label class="section__label" for="amount">Withdraw Amount:</label>
+                        <input class="section__input" type="number" placeholder="0" name="amount" id="amount" min=1 max="<%= totalAmount %>" required><span class="currency">SMLY</span>
+                       
+                        <button class="section__button" type="submit">Cash out</button>
+                    </form>
+                </div>
+            </div>
         </section>
     </main>
     <%- include('footer') %>
+    <script src="/scripts/qrcode.js"></script>
+    <script src="/scripts/playerinfo.js"></script>
 </body>
 </html>

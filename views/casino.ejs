@@ -6,19 +6,56 @@
     <title>Casino Info | SMLY Casino</title>
     <link rel="shortcut icon" href="/img/logo/headlogo.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/player.css">
 </head>
 <body>
     <%- include('header') %>
-    <main class="player">
-        <section class="player__info">
-            <span><strong>Account:</strong> <%= casino.account %></span>
-            <span><strong>Casino Address:</strong> <%= casino.address %></span>
-            <span><strong>house status:</strong> <%= (casino.totalOwed) %></span>
-            <span><strong>Balance:</strong> <%= (casino.totalAmount + casino.totalOwed) %></span>
-            
-           
+    <main class="main">
+        <section class="section">
+            <div class="section__content">
+                <div class="section__logo">
+                    <div class="section__logoImg">
+                        <img class="section__img" src="/img/logo/casinosuitcase.png" alt="Casino in a suitcase">
+                    </div>
+                    <span class="section__logoTitle"><strong>SMLY</strong> Casino</span>
+                </div>
+                <p class="section__p">
+                    Here you can see the status of the casino, and how much money is left to win!
+                </p>
+            </div>
+        </section>
+        <section class="section">
+            <div class="section__content">
+                <span class="section__title">Casino Status</span>
+                <div class="section__innerContent">
+                    <div class="section__text ">
+                        <p>Here you can see the remaining funds of the casino, if the well has run dry you are welcome to donate to the given address, if you see that all your coins ended here then... No Refunds.</p>
+                    </div>
+                    <div class="section__text section__stats">
+                        <span class="section__span"><strong class="section__strong">Account:</strong> <%= casino.account %></span>
+                        <span class="section__span SMLY__address" ><strong class="section__strong">Casino Address:</strong> <%= casino.address %></span>
+                        <span class="section__span"><strong class="section__strong">House status:</strong> <%= (casino.totalOwed) %></span>
+                        <span class="section__span"><strong class="section__strong">Balance:</strong> <%= (casino.totalAmount) %> <span class="section__strong">SMLY</span></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section">
+            <div class="section__content">
+                <span class="section__title">QR Code</span>
+                <div class="section__innerContent">
+                    <div class="section__text ">
+                        <p>Here you can conviently scan the QR code of the Casino Address to hasten the process of transferring funds</p>
+                    </div>
+                    <div class="section__text section__qr">
+                        
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
+   
+    <%- include('footer') %>
+    <script src="/scripts/qrcode.js"></script>
+    <script src="/scripts/casino.js"></script>
 </body>
 </html>

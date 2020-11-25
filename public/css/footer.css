@@ -52,3 +52,20 @@
     transition: color 300ms ease-in;
     color: var(--smly-blue);
 }
+.footer__emphasis {
+    font-weight: bold;
+    text-decoration: underline;
+    text-transform: uppercase;
+}
+.footer__disclaimer {
+    line-height: 1.5em;
+    margin-top: 2em;
+    text-align: center;
+    font-weight: bold;
+}
+
+@media only screen and (max-width: 537px) {
+    .footer__usefullinks, .footer__rates{
+        width: 100%;
+    }
+}

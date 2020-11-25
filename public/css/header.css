@@ -2,8 +2,11 @@
     display: flex;
     justify-content: center;
     border: 1px solid black;
-    background-color:var(--nav-bg);
+    background-color: rgba(0,0,0, .8);
     max-height: 4em;
+    position: fixed;
+    width: 100%;
+    box-shadow: 0 6px 6px 0 rgba(0,0,0,.1);
 
 }
 

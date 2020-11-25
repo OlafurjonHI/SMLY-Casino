@@ -1,7 +1,9 @@
 @import "./resets.css";
+@import "./FA/all.css";
 @import "./header.css";
 @import "./footer.css";
-@import "./FA/all.css";
+@import "./highlow.css";
+
 :root {
     --max-width: 60em;
     --nav-bg: #333333;
@@ -28,6 +30,7 @@ main {
     align-items: center;
     justify-content: center;
     align-self: center;
+    padding-top: 4em;
 }
 .section {
     width: 100%;
@@ -41,6 +44,22 @@ main {
     background-color: #94d6ff;
 
 }
+
+.section:nth-of-type(odd) .section__input{
+    background-color:var(--smly-blue);
+
+}
+.section:nth-of-type(odd) .section__button{
+    background-color:green;
+
+
+}
+.section:nth-of-type(odd) .section__button:hover{
+    background-color:var(--nav-bg);
+    color: limegreen;
+
+}
+
 
 .section__content{
     max-width: var(--max-width);
@@ -160,10 +179,28 @@ main {
     margin-bottom: 1em;
     font-size: 1em;
 }
+.section__stats {
+    display: flex;
+    flex-direction: column;
+}
+.section__game {
+    width: 50%;
+}
+.section__qr {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+}
+
+.section__strong {
+    font-weight: bold;
+}
 .section__button{
     cursor: pointer;
     font-weight: bold;
     color: white;
+    box-shadow: 0 6px 6px 0 rgba(0,0,0,.1);
     background: var(--nav-bg);
 }
 .section__button:hover {
@@ -171,95 +208,42 @@ main {
     color: black;
     background-color: aliceblue;
 }
-.gamecorner__player {
-    width: 20%;
-    padding: .5em;
-    box-sizing: border-box;
+.section__note {
+    margin-top: 1em;
+    font-size: .8em;
+    line-height: 1em;
+    font-style: italic;
 }
-.player__info{
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-.gamecorner__message{
-    display: flex;
-    flex-direction: column;
-    width: 20%;
-    box-sizing: border-box;
-    flex-direction: column;
-    padding: .5em;
-   
-}
-.message {
-
-    border: 1px solid black;
-    min-width: 10em;
-    min-height: 10em;
-    overflow: auto;
-}
-.gamecorner__container {
-    width: 60%;
-    box-sizing: border-box;
-    padding: .5em;
-}
-.gamecorner__game {
-    padding: 1em 0;
-}
-.gamecorner__strong {
-    font-weight: bold;
+.SMLY__address {
+    word-break: break-word;
 }
 
-.game__form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.highlow {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;
-    justify-content: space-around;
-    align-items: center;
-    min-height: 20em;
-}
-
-.highlow__deck{
-    display: flex;
-    flex-direction: column;
-}
-.highlow__interactions {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-}
-.highlow__betting {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 1em;
-}
-.submit__button {
-    width: 100%;
-    cursor: pointer;
-}
 .currency {
     font-weight: bold;
 }
 @media only screen and (max-width: 768px) {
-
-    .section__innerContent .section__text{
-        width: 100%;
+    .main{
+        padding-top: 7em;
     }
-    .section__innerContent .section__image{
+
+    .section__innerContent .section__text, .section__innerContent .section__image
+    ,.section__innerContent .section__form
+    {
         width: 100%;
+        word-break: break-word;
     }
     .section__image img {
         height: 100%;
         width: 100%;
+    }
+}
+@media only screen and (max-width: 537px) {
+    .section__logo {
+        flex-direction: column;
+
+        text-align: center;
+    }
+    .section__logoTitle {
+        margin: 0;
     }
 }

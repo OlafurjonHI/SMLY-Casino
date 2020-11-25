@@ -70,6 +70,7 @@ app.post("/playerinfo", (req,res)=> {
     else {
     casino.updatePlayerBalance(ssn.currentPlayer['username'])
     FW.writeObjToFile(casino.playerFile, casino.players)
+    FW.writeObjToFile(casino.casinoFile,casino)
     res.render("playerinfo", {
         player: ssn.currentPlayer,
         totalAmount: casino.getPlayerBalance(ssn.currentPlayer["username"])
@@ -83,6 +84,9 @@ app.post("/cashout", bodyParser.urlencoded({extended:false}),(req,res)=> {
         res.redirect('/')
     else {
         const { amount} = req.body;
+        if(amount < 0){
+            redirect('/playerinfo')
+        }
         let result = casino.transferFromCasino(ShellCommand,ssn.currentPlayer["username"],amount)
         console.log(`Result: ${result}`)
         if(result){
@@ -201,12 +205,12 @@ app.get("/games/highorlow", (req,res)=> {
                 deck = new Deck();
                 deck.shuffleDeck();
                 drawncard = deck.drawCard();
-                ssn.message = `New Game \nFirst card is: \n${drawncard.toString()}\n`
+                ssn.message = `New Game \nFirst card is: ${drawncard.toString()}\n`
                 ssn.deck = deck;
             } else {
                 deck = new Deck((ssn.deck.deck))
                 drawncard = deck.drawCard();
-                ssn.message += `Next card is: \n${drawncard.toString()}\n`
+                ssn.message += `Next card is: ${drawncard.toString()}\n`
                 ssn.deck = deck
             }
             ssn.currentDrawnCard = drawncard
@@ -233,7 +237,7 @@ app.post("/games/highorlow",bodyParser.urlencoded({extended:false}), (req,res)=>
         let oldcard = new Card(suit,rank)
         let total = parseInt(casino.getPlayerBalance(ssn.currentPlayer["username"]))
         let { amount, highlow } = req.body;
-        if(amount > total){
+        if(amount > total || amount < 0){
             let deck = new Deck((ssn.deck.deck))
             ssn.message  += `You dont have ${amount} to spend\nTry Again or transfer funds to ${ssn.currentPlayer['casinoAddress']}\n` 
             FW.writeObjToFile(casino.playerFile,casino.players)
@@ -255,18 +259,18 @@ app.post("/games/highorlow",bodyParser.urlencoded({extended:false}), (req,res)=>
             deck.shuffleDeck();
             drawncard = deck.drawCard();
             ssn.deck = deck;
-            ssn.message = `New Game \nFirst card is: \n${drawncard.toString()}\n`
+            ssn.message = `New Game \nFirst card is: ${drawncard.toString()}\n`
         } else {
             deck = new Deck((ssn.deck.deck))
             drawncard = deck.drawCard();
             ssn.deck = deck
-            ssn.message += `Next card is: \n${drawncard.toString()}\n`
+            ssn.message += `Next card is: ${drawncard.toString()}\n`
         }
         highlow = parseInt(highlow)
         oldrank = oldcard.getPureRank()
         newrank = drawncard.getPureRank()
         if(highlow > oldrank){
-            console.log("higher")
+            ssn.message += `You guessed higher\n`
             if(oldrank < newrank){
                 casino.transferWinningsToAccount(ssn.currentPlayer["username"],amount)
                 ssn.message += `Congratulations Adding: ${amount} to your winnings\n`
@@ -277,7 +281,7 @@ app.post("/games/highorlow",bodyParser.urlencoded({extended:false}), (req,res)=>
             }
         }
         else if(highlow < oldrank){
-            console.log("lower")
+            ssn.message += `You guessed lower\n`
             if(oldrank > newrank){
                 casino.transferWinningsToAccount(ssn.currentPlayer["username"],amount)
                 ssn.message += `Congratulations Adding: ${amount} to your winnings\n`

@@ -9,73 +9,75 @@
 </head>
 <body>
     <%- include('header') %>
-    <main class="gamecorner">
-        <aside class="gamecorner__player">
-            <div class="player__info">
-                <span class="player__stats"><strong class="gamecorner__strong">Player:</strong><%= player["username"] %></span>
-                <span class="player__stats"><strong class="gamecorner__strong">Current Amount:</strong><%= player["currentFunds"] %></span>
-                <span class="player__stats"><strong class="gamecorner__strong">Current Winnings:</strong><%= parseFloat(player["currentWinnings"]) %></span>
-                <span class="player__stats"><strong class="gamecorner__strong">Total Amount:</strong><%= totalAmount %></span>
-            </div>
-        </aside>
-        <section class="gamecorner__container">
-            <div class="gamecorner__info">
-                <h2 class="gamecorner__title">Welcome to High or Low!</h2>
-                <p class="gamecorner__info"><strong class="gamecorner__strong">Instructions</strong>
-                This is a simple little game you can play up to 10 rounds per deck. We will show you a random card
-                and the only thing you need to do is guess, if the next card will be higher or lower. The Ace is the lowest
-                and the King is the highest.Guess correctly and the house pays you the submitted value. Oh and If there is a draw... the house wins 😎
+    <main class="main">
+        <section class="section">
+            <div class="section__content">
+                <div class="section__logo">
+                    <div class="section__logoImg">
+                        <img class="section__img" src="/img/logo/headlogocards.png" alt="SMLY gambler with cards">
+                    </div>
+                    <span class="section__logoTitle"><strong>High</strong> or <strong>Low</strong></span>
+                </div>
+                <p class="section__p">
+                    This is a simple little game you can play up to 10 rounds per deck. We will show you a random card
+                    and the only thing you need to do is guess, if the next card will be higher or lower. The Ace is the lowest
+                    and the King is the highest.Guess correctly and the house pays you the submitted value. Oh and If there is a draw... the house wins 😎
                 </p>
             </div>
-            <div class="gamecorner__game">
-                <div class="highlow">
-                    <div class="highlow__card">
-                        <div class="highlow__imgContainer">
-                            <img src= <%= card.getImgPath() %> alt="<%= (card.toString()) %>"/>
+        </section>
+        <section class="section">
+            <div class="section__content">
+                <span class="section__title">Let's Play!</span>
+                <div class="section__innerContent">
+                    <div class="section__text section__information"> 
+                        <div class="player__info">
+                            <span class="player__stats"><strong class="section__strong">Player:</strong><%= player["username"] %></span>
+                            <span class="player__stats"><strong class="section__strong">Current Amount:</strong><%= player["currentFunds"] %></span>
+                            <span class="player__stats"><strong class="section__strong">Current Winnings:</strong><%= parseFloat(player["currentWinnings"]) %></span>
+                            <span class="player__stats"><strong class="section__strong">Total Amount:</strong><%= totalAmount %></span>
                         </div>
-                        <span> <%= card %></span>
+                        
+                        <div class="gamecorner__message">
+                            <span class="message__label">Game Log</span>
+                            <div class="message">
+                               <p class="message__text"><% if(msg){%><%=msg%><%}%></p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="highlow__deck">
-                        <div class="highlow__imgContainer">
-                            <img src= <%= card.backimage %> alt="<%= (card.toString()) %>"/>
+                    <div class="section__game">
+                        <div class="highlow">
+                            <div class="highlow__imgContainer">
+                                <img class="highlow__img" src= <%= card.getImgPath() %> alt="<%= (card.toString()) %>"/>
+                            </div>
+                            <div class="highlow__deck">
+                                <img class="highlow__img" src= <%= card.backimage %> alt="<%= (card.toString()) %>"/>
+                            </div>
+                      
                         </div>
-                        <span>Cards in deck:<%= deck.getSize() %></span>
-                        <span>Cards until restart:<%= deck.getSize()-42 %></span>
-                    </div>
-                    <div class="highlow__interactions">
-                        <div class="highlow__betting">
-                            <form class="game__form highlow__form" action="/games/highorlow" method="POST">
-                                <label for="amount">Betting Amount</label>
-                                <input type="number" placeholder="0" name="amount" id="amount" max="<%= totalAmount %>" required><span class="currency">SMLY</span>
-                               
-                                <div class="radio__group">
-                                    <label>Higher:
-                                        <input type="radio" name="highlow" value="<%= (card.getPureRank()+1 ) %>" id="radio__higher" required>
-                                    </label>
-                                    <label>Lower:
-                                        <input type="radio" name="highlow" value="<%= (card.getPureRank()-1) %>" id="radio__lower">
-                                    </label>
-                                </div>
-                                <button class="submit__button highlow__button" type="submit">Make a bet</button>
-                            </form>
-                        </div>
-
                     </div>
                 </div>
+                <div class="highlow__interactions">
+                    <form class="section__form highlow__form" action="/games/highorlow" method="POST">
+                        <label class="section__label" for="amount">Betting Amount</label>
+                        <input class="section__input" type="number" placeholder="0" name="amount" min="1" id="amount" max="<%= totalAmount %>" required><span class="currency">SMLY</span>
+                    
+                        <div class="radio__group">
+                            <label class="section__label">Higher:
+                                <input type="radio" name="highlow" value="<%= (card.getPureRank()+1 ) %>" id="radio__higher" required>
+                            </label>
+                            <label class="section__label">Lower:
+                                <input  type="radio" name="highlow" value="<%= (card.getPureRank()-1) %>" id="radio__lower">
+                            </label>
+                        </div>
+                        <button s class="submit__button highlow__button section__button" type="submit">Make a bet</button>
+                    </form>
+                </div>
+       
             </div>
-
         </section>
-        <aside class="gamecorner__message">
-            <span class="message__label">Game Log</span>
-            <div class="message">
-               <p class="message__text">
-                <% if(msg){ %>
-                    <%= msg %>
-                <% } %>
-               </p>
-            </div>
-        </aside>
     </main>
+    
     <%- include('footer') %>
+    <script src="/scripts/highlow.js"></script>
 </body>
 </html>
