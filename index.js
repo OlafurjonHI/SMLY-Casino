@@ -21,15 +21,18 @@ app.use((req,res,next) => {
     next();
 })
 
+
 //Entities and Helpers
 const ShellCommand = require('./execshell');
 const FW = require('./helpers/filewriter');
 const Casino = require('./entities/casino')
+const Blackjack = require('./entities/casino')
 const Deck = require('./entities/deck');
 const Card = require('./entities/card');
 
 
 let casino = new Casino("http://localhost:1337/");
+
 let ssn;
 const port = 1337
 
@@ -68,13 +71,16 @@ app.post("/playerinfo", (req,res)=> {
     if(ssn.currentPlayer == null)
         res.redirect('/')
     else {
-    casino.updatePlayerBalance(ssn.currentPlayer['username'])
-    FW.writeObjToFile(casino.playerFile, casino.players)
-    FW.writeObjToFile(casino.casinoFile,casino)
-    res.render("playerinfo", {
-        player: ssn.currentPlayer,
-        totalAmount: casino.getPlayerBalance(ssn.currentPlayer["username"])
-    });
+        console.log(ssn.currentPlayer)
+        let player =casino.getPlayer(ssn.currentPlayer['username'])
+        casino.updatePlayerBalance(player['username'])
+        ssn.currentPlayer = player
+        FW.writeObjToFile(casino.playerFile, casino.players)
+        FW.writeObjToFile(casino.casinoFile,casino)
+        res.render("playerinfo", {
+            player: ssn.currentPlayer,
+            totalAmount: casino.getPlayerBalance(ssn.currentPlayer["username"])
+        });
     }
 })
 
@@ -91,7 +97,9 @@ app.post("/cashout", bodyParser.urlencoded({extended:false}),(req,res)=> {
         console.log(`Result: ${result}`)
         if(result){
             casino.updateCasinoBalance()
-            casino.updatePlayerBalance(ssn.currentPlayer['username'])
+            let player =casino.getPlayer(ssn.currentPlayer['username'])
+            casino.updatePlayerBalance(player['username'])
+            ssn.currentPlayer = player
             FW.writeObjToFile(casino.casinoFile,casino)
             FW.writeObjToFile(casino.playerFile,casino.players)
         }
@@ -311,7 +319,28 @@ app.post("/games/highorlow",bodyParser.urlencoded({extended:false}), (req,res)=>
     }
 })
 
-
+app.get("/games/blackjack", (req,res)=> {
+    ssn = req.session;
+    if(ssn.blackjack == null){
+        let blackjack = new Blackjack();
+        ssn.blackjack = blackjack;
+    }
+    if(ssn.currentPlayer == null)
+        res.redirect('/')
+    else {
+        ssn.message = `Welcome\n Please place a bet to start \n`
+        let total = parseInt(casino.getPlayerBalance(ssn.currentPlayer["username"]))
+        res.render("blackjack",{
+            player: ssn.currentPlayer,
+            totalAmount: total,
+            playerHand: null,
+            dealerHand: null,
+            playerHandTotal: 0,
+            dealerHandTotal: 0,
+            msg: ssn.message,
+        });
+    }
+});
 
 
 
@@ -336,6 +365,19 @@ app.post("/games/highorlow",bodyParser.urlencoded({extended:false}), (req,res)=>
 
  
 
-
+ app.get("*",(req, res) => {
+    res.status(404);
+    ssn = req.session;
+  
+    if (req.accepts('html')) {
+      res.render('404', { url: req.url,player: ssn.currentPlayer });
+      return;
+    }
+    if (req.accepts('json')) {
+        res.send({ error: 'Not found' });
+        return;
+    }
+    res.type('txt').send('Not found');
+});
 
 

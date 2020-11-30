@@ -7,7 +7,7 @@ const commands = {
 class Casino {
     constructor(server){
         this.account = "SMLYCASINO"
-        this.address = "BPYKcpotu8KgHMSYmrjT9ZzjMXhiY6CDjR"
+        this.address = "B6uriySEvqdQYF1GX6XDuf4f6QriYPRgav"
         this.totalAmount = 0;
         this.totalOwed = 0;
         this.playerFile = "files/players.json";
@@ -94,7 +94,7 @@ class Casino {
                     )
                     this.totalOwed += parseFloat(this.players[username]["currentWinnings"])
                     this.currentFunds -= parseFloat(this.players[username]["currentFunds"])
-                    this.players[username]["currentWinnings"] = 0;
+                    this.players[username]["currentWinnigs"] = 0;
                     this.players[username]["currentFunds"] = 0;
                 }
                 else {
@@ -209,6 +209,7 @@ class Casino {
         }).then(resp => {
             this.players[username]["currentFunds"] = parseFloat(resp)
         }).catch(error =>console.log("error getting funds" + error))
+        FW.writeObjToFile(this.playerFile,this.players) 
     }
 
     updatePlayersBalance(){

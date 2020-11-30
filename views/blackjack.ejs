@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlackJack | SMLY Casino</title>
+    <link rel="shortcut icon" href="/img/logo/headlogo.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/styles.css">
+
+</head>
+<body>
+    <%- include('header') %>
+    <main class="main">
+        <section class="section">
+            <div class="section__content">
+                <div class="section__logo">
+                    <div class="section__logoImg">
+                        <img class="section__img" src="/img/logo/headlogocards.png" alt="SMLY gambler with cards">
+                    </div>
+                    <span class="section__logoTitle"><strong>Black</strong>Jack</span>
+                </div>
+                <p class="section__p">
+                    This game is simple, you just need to beat the dealer. Without getting more than a total sum of 21. All the face cards give 10 points, Ace is either 1 or 11, the rest represent themselves. you can decide to get a new card or stay. when you 
+                    feel comfortable with your cards it's the dealers turn if the Dealer busts or ends with lower score then you win!
+                </p>
+            </div>
+        </section>
+        <section class="section">
+            <div class="section__content">
+                <span class="section__title">Let's Play!</span>
+                <div class="section__innerContent">
+                    <div class="section__text section__information"> 
+                        <div class="player__info">
+                            <span class="player__stats"><strong class="section__strong">Player:</strong><%= player["username"] %></span>
+                            <span class="player__stats"><strong class="section__strong">Current Amount:</strong><%= player["currentFunds"] %></span>
+                            <span class="player__stats"><strong class="section__strong">Current Winnings:</strong><%= parseFloat(player["currentWinnings"]) %></span>
+                            <span class="player__stats"><strong class="section__strong">Total Amount:</strong><%= totalAmount %></span>
+                        </div>
+                        
+                        <div class="gamecorner__message">
+                            <span class="message__label">Game Log</span>
+                            <div class="message">
+                                <p class="message__text"><% if(msg){%><%=msg%><%}%></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section__game">
+                        <div class="blackjack">
+                            <div class="blackjack__hand">
+                                <span class="blackjack__handTotal">Your Hand</span>
+                                <% if(playerHand){ %>
+                                    <% for(let i = 0; i < playerHand.length; i++) { %>
+                                        <div class="blackjack__handCard">
+                                            <img class="blackjack__img" src= <%= playerHand[i].getImgPath() %> alt="<%= (playerHand[i].toString()) %>"/>
+                                        </div>
+                                        
+                                      <% } %>
+                                <% } else { %>
+                                    <div class="blackjack__handCard --two">
+                                        <img class="blackjack__img" src="/img/cards/spilbak.png" alt="The Back of the Card" >
+                                    </div>
+                                    <div class="blackjack__handCard --two">
+                                        <img class="blackjack__img" src="/img/cards/spilbak.png" alt="The Back of the Card" >
+                                    </div>
+                                <% } %>
+                                <span class="blackjack__handTotal"> Total: <%= playerHandTotal %></span>
+                            </div>
+                            <div class="blackjack__hand">
+                                <span class="blackjack__handTotal">Dealer's Hand</span>
+                                <% if(dealerHand){ %>
+                                    <% for(let i = 0; i < dealerHand.length; i++) { %>
+                                        <div class="blackjack__handCard">
+                                            <img class="blackjack__img" src= <%= dealerHand[i].getImgPath() %> alt="<%= (dealerHand[i].toString()) %>"/>
+                                        </div>
+                                        
+                                      <% } %>
+                                <% } else { %>
+                                    <div class="blackjack__handCard --two">
+                                        <img class="blackjack__img" src="/img/cards/spilbak.png" alt="The Back of the Card" >
+                                    </div>
+                                    <div class="blackjack__handCard --two">
+                                        <img class="blackjack__img" src="/img/cards/spilbak.png" alt="The Back of the Card" >
+                                    </div>
+                                <% } %>
+                                <span class="blackjack__handTotal">Total:<%= dealerHandTotal %></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="highlow__interactions">
+                    <form class="section__form highlow__form" action="/games/blackjack" method="POST">
+                        <label class="section__label" for="amount">Betting Amount</label>
+                        <span class="section__currencyCombo">
+                            <input class="section__input" type="number" placeholder="0" name="amount" min="1" id="amount" max="<%= totalAmount %>" required>
+                            <span class="currency">SMLY</span>
+                        </span>
+                        <button class="submit__button highlow__button section__button" type="submit">Start Game</button>
+                    </form>
+                </div>
+       
+            </div>
+        </section>
+    </main>
+    
+    <%- include('footer') %>
+    <script src="/scripts/highlow.js"></script>
+</body>
+</html>
