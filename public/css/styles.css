@@ -233,16 +233,16 @@ main {
     margin: 2em 0;
     flex-wrap: wrap;
 }
-.blackjack__handCard.--two{
+.blackjack__handCard.--d2,.blackjack__handCard.--d1{
     width: 50%;
 }
-.blackjack__handCard.--three{
+.blackjack__handCard.--d3{
     width: 33.33%;
 }
-.blackjack__handCard.--four{
+.blackjack__handCard.--d4{
     width: 25%;
 }
-.blackjack__handCard.--five{
+.blackjack__handCard.--d5{
     width: 20%;
 }
 

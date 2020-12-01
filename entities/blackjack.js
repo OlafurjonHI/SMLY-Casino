@@ -4,19 +4,35 @@ const Card = require('./card');
 class Blackjack {
     constructor(deck,dealer,player) {
         this.deck = []
-        this.dealer = dealer;
-        this.player = player
-        if(!deck)
+        this.dealer = (dealer) ? this.restoreHand(dealer) : []
+        this.player = (player) ? this.restoreHand(player) : []
+        if(!deck){
             this.deck = new Deck();
-        else
+            this.deck.shuffleDeck();
+            this.dealCards();
+        } 
+        else{
             this.deck = new Deck(deck);
+            console.log("using old deck")
+        }
+           
+            
+    }
+
+    restoreHand(hand){
+        let cards = [];
+        for(let h of hand){
+            cards.push(new Card(h.suit,h.rank))
+        }
+        return cards
     }
 
     dealCards(){
         for(let i = 0; i < 2; i++){
-            this.dealerhand.push(this.deck.drawCard())
+
             this.player.push(this.deck.drawCard())
         }
+        this.dealer.push(this.deck.drawCard())
     }
 
     getPlayerHand(){
@@ -27,7 +43,7 @@ class Blackjack {
     }
 
     hitCard(hand){
-        hand.push(this.deck(drawCard))
+        hand.push(this.deck.drawCard())
     }
 
     getHandTotal(hand){
@@ -58,6 +74,22 @@ class Blackjack {
         return parseInt(total);
     }
 
+    getCardRank(card){
+        let rank = card.getPureRank()+1
+        if(rank === 1){
+            return 11;
+        }
+        else if(rank > 10){
+           return 10;
+        }
+        else {
+            return parseInt(rank)
+        }
+        
+    }
+    
+    
+
     checkWin(){
         let playerWon = undefined;
         let playerTotal =this.getHandTotal(this.player)
@@ -75,6 +107,9 @@ class Blackjack {
             playerWon = false;
         }
         else if(dealerTotal >= 17 && dealerTotal < playerTotal){
+            playerWon = true;
+        }
+        else if(dealerTotal >= 17 && dealerTotal === playerTotal){
             playerWon = true;
         }
         return playerWon;
